@@ -10,6 +10,10 @@ run the notebook which:
  - uses the lambda function in lambda/index.py to copy each part
  - then completes the multipart download
  - be sure to abort the download if it fails using the uncommented code
+
+I have now also added a tile server to here:
+ - some settings are done manually following instructions from https://docs.protomaps.com/deploy/aws
+  
   
 to do:
  - formalise the notebook to a script
