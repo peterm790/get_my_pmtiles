@@ -46,3 +46,30 @@ class MyPmtilesStack(Stack):
                 f"arn:aws:iam::{self.account}:role/ReadRole",  # Use self.account for current account ID
             ]
         ))
+
+        # add tile server 
+
+        # Define the Lambda function
+        tile_server_lambda = _lambda.Function(
+            self, 'TileServerLambda',
+            runtime=_lambda.Runtime.NODEJS_18_X,
+            handler='index.handler',
+            code=_lambda.Code.from_asset('tile_server_lambda'),
+            architecture=_lambda.Architecture.ARM_64,
+            memory_size=512,
+            environment={
+                'BUCKET': bucket.bucket_name,
+                'PUBLIC_HOSTNAME': 'denk0m991obk6.cloudfront.net'
+            }
+        )
+
+        # Grant the Lambda function read/write permissions to the bucket
+        bucket.grant_read_write(tile_server_lambda)
+
+        # Enable Function URL with no authentication
+        tile_server_lambda.add_permission(
+            "FunctionURLPermission",
+            principal=iam.ServicePrincipal("lambda.amazonaws.com"),
+            action="lambda:InvokeFunctionUrl",
+            function_url_auth_type=_lambda.FunctionUrlAuthType.NONE
+        )
